@@ -1,8 +1,9 @@
 import express from "express"
-import { PORT, mongoDBURL } from "./config.js";
 import mongoose from "mongoose";
 import booksRoute from "./routes/booksRoute.js";
 import cors from "cors";
+import { config } from "dotenv";
+config();
 
 const app = express();
 
@@ -26,12 +27,14 @@ app.get("/", (req, res) => {
 
 app.use("/books", booksRoute);
 
+const port = process.env.PORT || 5555;
+
 mongoose
-    .connect(mongoDBURL)
+    .connect(process.env.MONGO_URI)
     .then(() => {
         console.log("App connected to database")
-        app.listen(PORT, () => {
-            console.log(`Server listening on port: ${PORT}`)
+        app.listen(port, () => {
+            console.log(`Server listening on port: ${port}`)
         })
     })
     .catch((error) => {
